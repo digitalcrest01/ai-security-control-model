@@ -91,6 +91,8 @@ python3 tools/scaffold.py && terraform fmt -recursive
 3. **A phase cannot exit** until its gate policy returns an empty `deny` set
    against real pipeline evidence.
 
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow and the checks CI runs.
+
 ## Standards mapping
 
 Every domain ties to named standards (NIST AI RMF, ISO/IEC 42001, EU AI Act,

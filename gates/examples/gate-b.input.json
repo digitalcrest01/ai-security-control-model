@@ -1,0 +1,14 @@
+{
+  "scan": {
+    "sast_critical": 0,
+    "secrets_found": 0
+  },
+  "tests": {
+    "prompt_injection_passed": true,
+    "red_team_passed": true,
+    "poisoning_critical": 0
+  },
+  "policy": {
+    "as_code_enforced": true
+  }
+}

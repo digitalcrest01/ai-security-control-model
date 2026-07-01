@@ -1,0 +1,14 @@
+{
+  "mapping": {
+    "frameworks": ["NIST AI RMF", "ISO 42001", "EU AI Act"]
+  },
+  "evidence": {
+    "captured": true
+  },
+  "dashboards": {
+    "live": true
+  },
+  "improvement": {
+    "loop_open": true
+  }
+}

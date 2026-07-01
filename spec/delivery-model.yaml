@@ -1,0 +1,27 @@
+# Delivery / engagement model — generated from tools/scaffold.py.
+steps:
+  - step: STEP 1
+    name: Diagnostic sprint
+    duration: 2–3 weeks
+    activity: Score the current estate against all 8 domains. Run Shadow AI discovery and rank gaps by blast radius.
+    deliverable: Maturity heat map + gap register
+  - step: STEP 2
+    name: Target operating model
+    duration: 2 weeks
+    activity: Define the secure target per domain. Identity as perimeter, control ownership set as a RACI.
+    deliverable: Reference architecture + control catalogue
+  - step: STEP 3
+    name: "Roadmap & business case"
+    duration: 1 week
+    activity: Sequence the delta. Prioritise by coverage gap and risk reduction per pound spent.
+    deliverable: Phased roadmap + cost/risk model
+  - step: STEP 4
+    name: "Build & embed"
+    duration: 6–12 weeks
+    activity: Ship landing zones, guardrails and gates as Terraform and policy-as-code wired into the pipeline.
+    deliverable: IaC modules + OPA/Sentinel policies live
+  - step: STEP 5
+    name: "Assure & run"
+    duration: Ongoing
+    activity: Continuous monitoring, evidence capture and audit mapping. Findings re-open discovery.
+    deliverable: Dashboards + audit pack + improvement loop

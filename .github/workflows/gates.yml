@@ -1,0 +1,101 @@
+name: gates
+
+# Enforce the model as code: policies must parse and pass, evidence must clear
+# every gate, and Terraform must be formatted and valid.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: OPA policies & gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+
+      - name: opa check (all policies parse)
+        run: opa check gates domains
+
+      - name: opa fmt (policies are formatted)
+        run: opa fmt --list --fail gates
+
+      - name: opa test (gate unit tests)
+        run: opa test gates -v
+
+      # Every example evidence file must clear its gate (deny set is empty).
+      - name: Evaluate exit gates against example evidence
+        run: |
+          set -euo pipefail
+          declare -A GATES=(
+            [a]="gate_a"
+            [b]="gate_b"
+            [c]="gate_c"
+            [d]="gate_d"
+          )
+          fail=0
+          for g in a b c d; do
+            pkg="${GATES[$g]}"
+            input="gates/examples/gate-${g}.input.json"
+            deny=$(opa eval -f raw -d gates -i "$input" "data.gates.${pkg}.deny")
+            if [ "$deny" != "[]" ]; then
+              echo "::error::Gate ${g^^} failed for $input: $deny"
+              fail=1
+            else
+              echo "Gate ${g^^}: PASS"
+            fi
+          done
+          exit $fail
+
+  terraform:
+    name: Terraform fmt & validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      - name: terraform fmt (check)
+        run: terraform fmt -check -recursive
+
+      - name: terraform validate (each module)
+        run: |
+          set -euo pipefail
+          for dir in modules/landing-zone domains/*/terraform; do
+            echo "== validating $dir =="
+            terraform -chdir="$dir" init -backend=false -input=false >/dev/null
+            terraform -chdir="$dir" validate
+          done
+
+  spec:
+    name: Spec integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Regenerating from the source of truth must produce no diff — spec/ and
+      # domains/ stay in lockstep with tools/scaffold.py.
+      - name: Scaffold is in sync with spec
+        run: |
+          set -euo pipefail
+          REPO="$PWD" python3 tools/scaffold.py
+          terraform fmt -recursive >/dev/null 2>&1 || true
+          if ! git diff --quiet; then
+            echo "::error::Generated files are out of sync. Run tools/scaffold.py and commit."
+            git --no-pager diff --stat
+            exit 1
+          fi

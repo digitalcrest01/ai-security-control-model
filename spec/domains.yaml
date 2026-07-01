@@ -1,0 +1,310 @@
+# Capability domains — generated from tools/scaffold.py (source of truth).
+domains:
+  - id: D1
+    slug: d1-asset-posture-management
+    name: "AI Asset & Posture Management"
+    phase: p1-plan-discover
+    maturity: Moderate-High
+    coverage: Good but fragmented
+    coverage_note: Well-established controls and tools.
+    standards: ["NIST AI RMF · MAP", ISO/IEC 42001, CIS Benchmarks]
+    controls:
+      - id: D1-01
+        name: "AI Asset Inventory & Discovery"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-02
+        name: "AI Inventory & Classification"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-03
+        name: Owner / Steward Mapping
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-04
+        name: "Data & Model Lineage"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-05
+        name: Shadow AI Detection
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-06
+        name: "Posture & Config Assessment"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D1-07
+        name: "Risk Scoring & Prioritization"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D2
+    slug: d2-identity-access
+    name: "Identity & Access for Agents & AI"
+    phase: p1-plan-discover
+    maturity: Moderate-High
+    coverage: Good but fragmented
+    coverage_note: Identity and access maturing for agents.
+    standards: [NIST SP 800-207, OWASP NHI Top 10, CIS IAM]
+    controls:
+      - id: D2-01
+        name: Secure Non-human Identities
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-02
+        name: Agent Identity Management
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-03
+        name: MCP / Tool Authorization
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-04
+        name: Least Privilege Enforcement
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-05
+        name: "Token & Session Control"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-06
+        name: Secrets / Credential Management
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-07
+        name: "Entitlement & Policy Evaluation"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D2-08
+        name: "Anomaly Detection (Agents & NHIs)"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D3
+    slug: d3-development-security-testing
+    name: "Development Security & AI App Testing"
+    phase: p2-build-develop
+    maturity: Moderate
+    coverage: Partial coverage
+    coverage_note: Shift-left improving, gaps remain.
+    standards: [OWASP LLM Top 10, NIST SSDF 800-218, OWASP ASVS]
+    controls:
+      - id: D3-01
+        name: Build Secure AI Systems
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-02
+        name: AI / SAST / Code Scanning
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-03
+        name: "Secrets & Data Exposure Scanning"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-04
+        name: "AI Red Teaming & Adversarial Testing"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-05
+        name: Prompt Injection Testing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-06
+        name: Agent Behavior Testing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-07
+        name: Model / Data Poisoning Testing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D3-08
+        name: "CI/CD Integration & Policy as Code"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D4
+    slug: d4-runtime-protection
+    name: "Runtime Protection & Interaction Security"
+    phase: p2-build-develop
+    maturity: Moderate
+    coverage: Partial coverage
+    coverage_note: Runtime safeguards evolving.
+    standards: [OWASP LLM01, MITRE ATLAS, "NIST AI RMF · MANAGE"]
+    controls:
+      - id: D4-01
+        name: "Prompt Inspection & Content Filtering"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-02
+        name: PII / Secrets Detection
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-03
+        name: Jailbreak / Injection Detection
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-04
+        name: Output Safety / Policy Enforcement
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-05
+        name: Tool / Function Call Guardrails
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-06
+        name: "Runtime Monitoring & Anomaly Detection"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D4-07
+        name: "Response Validation & Blocking"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D5
+    slug: d5-data-security
+    name: Data Security for AI
+    phase: p3-deploy-operate
+    maturity: Moderate-Low
+    coverage: Limited coverage
+    coverage_note: Data controls improving but uneven.
+    standards: [ISO/IEC 27001, "NIST AI RMF · MEASURE", UK GDPR / DPA 2018]
+    controls:
+      - id: D5-01
+        name: "Data Discovery & Classification"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-02
+        name: "Access Control & Entitlements (RAG)"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-03
+        name: Data Loss Prevention (DLP)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-04
+        name: "Data Minimization & Masking"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-05
+        name: Data Lineage (AI Pipelines)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-06
+        name: "Retention & Destruction Controls"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D5-07
+        name: Data Usage Auditing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D6
+    slug: d6-model-supply-chain
+    name: "Model Security & Supply Chain"
+    phase: p3-deploy-operate
+    maturity: Moderate-Low
+    coverage: Limited coverage
+    coverage_note: Model and supply chain security still early.
+    standards: [SLSA, CISA SBOM, NIST SSDF, MITRE ATLAS]
+    controls:
+      - id: D6-01
+        name: "Model Provenance & Lineage"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-02
+        name: Model Scanning (Malware / Backdoors)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-03
+        name: Vulnerability Management (Models / Libraries)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-04
+        name: AI Bill of Materials (AI BOM)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-05
+        name: "Secure Model Registry & Signing"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-06
+        name: "Dependency & Third-Party Risk Management"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D6-07
+        name: Model Integrity Monitoring
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D7
+    slug: d7-confidential-ai-infrastructure
+    name: "Confidential AI & Infrastructure"
+    phase: p4-govern-assure
+    maturity: Early-Moderate
+    coverage: Very limited coverage
+    coverage_note: Confidential AI and infrastructure emerging.
+    standards: [Confidential Computing Consortium, FIPS 140-3, ISO/IEC 27001]
+    controls:
+      - id: D7-01
+        name: Confidential Computing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-02
+        name: Encrypted Inference
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-03
+        name: Key Management (BYOK)
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-04
+        name: Private Data Processing
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-05
+        name: Secure Multi-Party Computation
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-06
+        name: "Isolated Runtimes & Sandboxing"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D7-07
+        name: Infrastructure Hardening
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+  - id: D8
+    slug: d8-governance-risk-compliance
+    name: "Governance, Risk & Compliance"
+    phase: p4-govern-assure
+    maturity: Moderate
+    coverage: Partial coverage
+    coverage_note: Governance enabling, enforcement evolving.
+    standards: [ISO/IEC 42001, "NIST AI RMF · GOVERN", EU AI Act]
+    controls:
+      - id: D8-01
+        name: AI Risk Assessment
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-02
+        name: Model Risk Management
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-03
+        name: "Regulatory Mapping & Controls"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-04
+        name: "Audit Logging & Evidence"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-05
+        name: "Reporting & Dashboards"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-06
+        name: Policy Management
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-07
+        name: Continuous Improvement
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO
+      - id: D8-08
+        name: "Continuous Monitoring & Assurance"
+        status: not_started   # not_started | in_progress | implemented | verified
+        owner: TODO

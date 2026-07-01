@@ -1,10 +1,31 @@
-Copyright (c) 2026 Digital Crest. All rights reserved.
+AI Security Control Model — Proprietary Software License
 
-PLACEHOLDER LICENSE — please confirm or replace.
+Copyright (c) 2026 Vertotech LLC. All rights reserved.
 
-This repository is provided without a public open-source grant. No permission is
-given to use, copy, modify, or distribute this software or its documentation
-except as expressly agreed in writing by the copyright holder.
+TODO: Confirm the licensing entity and terms before publishing or sharing this
+repository. This file mirrors the proprietary license used across Vertotech LLC
+repositories; replace it if a different entity or license (e.g. a customer EULA,
+or an OSI-approved license) is intended.
 
-Replace this file with your chosen licence (e.g. a proprietary EULA, or an
-OSI-approved licence such as Apache-2.0 or MIT) before publishing or sharing.
+This software, including its source code, documentation, and all associated
+materials (the "Software"), is the confidential and proprietary property of
+Vertotech LLC. It is a private, commercial work and is NOT released under any
+open-source or permissive license.
+
+No license or right, express or implied, is granted to any person or entity to
+use, copy, modify, merge, publish, distribute, sublicense, sell, disclose, or
+create derivative works of the Software, in whole or in part, except under a
+separate written agreement signed by Vertotech LLC. Absent such an agreement, any
+access to the Software does not confer any such rights.
+
+Unauthorised use, reproduction, distribution, or disclosure of the Software, or
+of any portion of it, is strictly prohibited and may result in civil and
+criminal liability, and will be prosecuted to the maximum extent permitted by
+law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

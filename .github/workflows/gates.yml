@@ -87,13 +87,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Regenerating from the source of truth must produce no diff — spec/ and
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.8"
+
+      # Regenerating from the source of truth (then formatting, exactly as the
+      # documented local workflow does) must produce no diff — spec/ and
       # domains/ stay in lockstep with tools/scaffold.py.
       - name: Scaffold is in sync with spec
         run: |
           set -euo pipefail
           REPO="$PWD" python3 tools/scaffold.py
-          terraform fmt -recursive >/dev/null 2>&1 || true
+          terraform fmt -recursive
           if ! git diff --quiet; then
             echo "::error::Generated files are out of sync. Run tools/scaffold.py and commit."
             git --no-pager diff --stat

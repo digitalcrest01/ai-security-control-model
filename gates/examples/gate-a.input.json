@@ -1,0 +1,20 @@
+{
+  "inventory": {
+    "assets": [
+      { "id": "svc-rag-search", "classified": true, "owner": "platform-eng", "risk_score": 3 },
+      { "id": "agent-support-bot", "classified": true, "owner": "cx-eng", "risk_score": 5 }
+    ],
+    "shadow_ai": [
+      { "id": "notebook-adhoc-llm", "risk_score": 2 }
+    ]
+  },
+  "identity": {
+    "non_human": [
+      { "id": "sa-rag-search", "managed": true },
+      { "id": "sa-support-bot", "managed": true }
+    ]
+  },
+  "thresholds": {
+    "shadow_ai_risk": 4
+  }
+}

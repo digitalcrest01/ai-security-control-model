@@ -1,0 +1,47 @@
+# Lifecycle phases — generated from tools/scaffold.py (source of truth).
+# Four phases run as a continuous loop; each owns two domains and ends in a gate.
+phases:
+  - id: p1-plan-discover
+    index: 0
+    label: PHASE 1
+    name: "Plan & Discover"
+    activities: Inventory, classify, assess risk
+    domains: [D1, D2]
+    gate:
+      id: A
+      slug: gate-a-known-estate
+      name: Known estate
+      exit_criteria: AI assets inventoried, classified, owned and risk-scored. Non-human identities under management. No untracked Shadow AI above risk threshold.
+  - id: p2-build-develop
+    index: 1
+    label: PHASE 2
+    name: "Build & Develop"
+    activities: Design, code, test, validate
+    domains: [D3, D4]
+    gate:
+      id: B
+      slug: gate-b-secure-by-build
+      name: Secure by build
+      exit_criteria: SAST and secrets clean. Red team and injection suites passed. Policy-as-code enforced in CI/CD. No critical poisoning findings.
+  - id: p3-deploy-operate
+    index: 2
+    label: PHASE 3
+    name: "Deploy & Operate"
+    activities: Run, interact, monitor, protect
+    domains: [D5, D6]
+    gate:
+      id: C
+      slug: gate-c-protected-production
+      name: Protected in production
+      exit_criteria: Runtime guardrails and DLP live. Model registry signed. Monitoring and anomaly detection operational across data and model pipelines.
+  - id: p4-govern-assure
+    index: 3
+    label: PHASE 4
+    name: "Govern & Assure"
+    activities: Govern, audit, comply, improve
+    domains: [D7, D8]
+    gate:
+      id: D
+      slug: gate-d-assured-auditable
+      name: "Assured & auditable"
+      exit_criteria: Controls mapped to NIST AI RMF, ISO 42001 and EU AI Act. Evidence captured, dashboards live, improvement loop running. Findings feed discovery.

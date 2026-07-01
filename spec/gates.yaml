@@ -1,0 +1,27 @@
+# Exit gates — generated from tools/scaffold.py (source of truth).
+# Each gate is enforced as an OPA policy under gates/<slug>.rego.
+gates:
+  - id: A
+    slug: gate-a-known-estate
+    name: Known estate
+    phase: p1-plan-discover
+    policy: gates/gate-a-known-estate.rego
+    exit_criteria: AI assets inventoried, classified, owned and risk-scored. Non-human identities under management. No untracked Shadow AI above risk threshold.
+  - id: B
+    slug: gate-b-secure-by-build
+    name: Secure by build
+    phase: p2-build-develop
+    policy: gates/gate-b-secure-by-build.rego
+    exit_criteria: SAST and secrets clean. Red team and injection suites passed. Policy-as-code enforced in CI/CD. No critical poisoning findings.
+  - id: C
+    slug: gate-c-protected-production
+    name: Protected in production
+    phase: p3-deploy-operate
+    policy: gates/gate-c-protected-production.rego
+    exit_criteria: Runtime guardrails and DLP live. Model registry signed. Monitoring and anomaly detection operational across data and model pipelines.
+  - id: D
+    slug: gate-d-assured-auditable
+    name: "Assured & auditable"
+    phase: p4-govern-assure
+    policy: gates/gate-d-assured-auditable.rego
+    exit_criteria: Controls mapped to NIST AI RMF, ISO 42001 and EU AI Act. Evidence captured, dashboards live, improvement loop running. Findings feed discovery.

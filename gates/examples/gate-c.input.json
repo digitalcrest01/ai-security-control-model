@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "guardrails_live": true,
+    "dlp_live": true
+  },
+  "registry": {
+    "models": [
+      { "id": "support-bot-v3", "signed": true },
+      { "id": "rag-embed-v1", "signed": true }
+    ]
+  },
+  "monitoring": {
+    "data_pipeline": true,
+    "model_pipeline": true
+  }
+}

@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Security Architecture — Operating Model & Delivery Workflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1117; --ink-2:#11161e; --panel:#161c26; --panel-2:#1b232f;
+    --line:#27313f; --line-soft:#1f2833;
+    --text:#e7edf4; --muted:#8b98a8; --faint:#5d6b7b;
+    --signal:#16d6b8;            /* secure / operational accent */
+    --p1:#4d8fd6;               /* plan & discover  */
+    --p2:#8a7fe0;               /* build & develop   */
+    --p3:#e0a23d;               /* deploy & operate  */
+    --p4:#46b58a;               /* govern & assure   */
+    /* maturity scale */
+    --m-high:#2f9e6b; --m-modhigh:#6fb85c; --m-mod:#e0b341;
+    --m-modlow:#e0853d; --m-early:#d9534f; --m-veryearly:#9b2d2a;
+    --radius:10px;
+    --maxw:1320px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:
+      radial-gradient(1100px 520px at 78% -8%, rgba(22,214,184,.07), transparent 60%),
+      radial-gradient(900px 500px at 8% 4%, rgba(77,143,214,.06), transparent 55%),
+      var(--ink);
+    color:var(--text);
+    font-family:Inter, system-ui, sans-serif;
+    line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+  .mono{font-family:"JetBrains Mono", monospace; letter-spacing:.02em}
+  h1,h2,h3{font-family:"Space Grotesk", sans-serif; font-weight:600; line-height:1.12; margin:0}
+  a{color:var(--signal); text-decoration:none}
+
+  /* ---------- HERO ---------- */
+  header.hero{padding:54px 0 30px; border-bottom:1px solid var(--line-soft)}
+  .eyebrow{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.32em;
+    text-transform:uppercase; color:var(--signal); margin-bottom:18px}
+  h1{font-size:clamp(30px,4.6vw,52px); letter-spacing:-.02em; max-width:16ch}
+  h1 .dim{color:var(--muted)}
+  .bluf{margin:22px 0 0; max-width:74ch; color:#cdd7e2; font-size:clamp(15px,1.4vw,17px)}
+  .bluf b{color:var(--text); font-weight:600}
+  .herometa{display:flex; flex-wrap:wrap; gap:14px; margin-top:28px}
+  .stat{border:1px solid var(--line); background:var(--panel); border-radius:var(--radius);
+    padding:12px 16px; min-width:120px}
+  .stat .n{font-family:"Space Grotesk",sans-serif; font-size:24px; font-weight:700; color:var(--text)}
+  .stat .l{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--muted); margin-top:3px}
+
+  .controls{display:flex; flex-wrap:wrap; align-items:center; gap:20px; margin-top:30px}
+  .toggle{display:inline-flex; border:1px solid var(--line); border-radius:999px; padding:4px; background:var(--ink-2)}
+  .toggle button{font-family:"JetBrains Mono",monospace; font-size:11.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); background:transparent; border:0; cursor:pointer;
+    padding:8px 16px; border-radius:999px; transition:.18s}
+  .toggle button.on{background:var(--signal); color:#04211c; font-weight:600}
+  .toggle button:focus-visible{outline:2px solid var(--signal); outline-offset:2px}
+
+  .legend{display:flex; flex-wrap:wrap; gap:14px; align-items:center}
+  .legend .lt{font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--faint)}
+  .legend .li{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:var(--muted)}
+  .dot{width:10px; height:10px; border-radius:50%; flex:none}
+
+  /* ---------- SECTION SCAFFOLD ---------- */
+  section{padding:46px 0; border-bottom:1px solid var(--line-soft)}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:8px}
+  .sec-no{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--signal); letter-spacing:.1em}
+  h2{font-size:clamp(21px,2.5vw,28px); letter-spacing:-.01em}
+  .sec-sub{color:var(--muted); max-width:78ch; margin:10px 0 26px; font-size:14.5px}
+
+  /* ---------- LIFECYCLE / OPERATING MODEL ---------- */
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; align-items:start}
+  .phase{display:flex; flex-direction:column; gap:12px}
+  .phase-head{border:1px solid var(--line); border-radius:var(--radius); padding:14px 14px 12px;
+    background:linear-gradient(180deg, var(--panel-2), var(--panel)); position:relative; overflow:hidden}
+  .phase-head::before{content:""; position:absolute; inset:0 auto 0 0; width:4px; background:var(--pc)}
+  .phase-tag{display:flex; align-items:center; justify-content:space-between; gap:8px}
+  .phase-n{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; color:var(--pc)}
+  .phase-name{font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:16px; margin-top:5px}
+  .phase-do{font-size:12px; color:var(--muted); margin-top:3px}
+
+  .domain{border:1px solid var(--line); border-radius:var(--radius); background:var(--panel);
+    padding:13px 13px 12px; position:relative; transition:border-color .18s, transform .18s, box-shadow .18s}
+  .domain::before{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; border-radius:3px 0 0 3px;
+    background:var(--pc)}
+  .domain:hover{transform:translateY(-2px); border-color:#33414f; box-shadow:0 10px 26px -16px rgba(0,0,0,.8)}
+  .domain h3{font-size:14px; line-height:1.25; padding-right:34px}
+  .domain .dno{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--faint)}
+  .mdot{position:absolute; top:13px; right:12px; width:13px; height:13px; border-radius:50%;
+    background:var(--mc); box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+  .caps{list-style:none; margin:11px 0 0; padding:0; display:flex; flex-direction:column; gap:5px}
+  .caps li{font-size:12.4px; color:#c2ccd8; padding-left:16px; position:relative; line-height:1.35}
+  .caps li::before{content:""; position:absolute; left:0; top:7px; width:6px; height:6px; border-radius:50%;
+    background:var(--signal); opacity:.55}
+  .cov{display:none; margin-top:11px; border-top:1px dashed var(--line); padding-top:9px}
+  .cov .badge{font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--mc); border:1px solid var(--mc); border-radius:5px; padding:2px 7px; display:inline-block}
+  .cov .note{font-size:11.8px; color:var(--muted); margin-top:6px}
+
+  /* gate */
+  .gate{border:1px dashed var(--p4); border-radius:var(--radius); padding:11px 12px; background:rgba(70,181,138,.05)}
+  .gate .glabel{font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--p4); display:flex; align-items:center; gap:7px}
+  .gate .glabel svg{flex:none}
+  .gate .gname{font-family:"Space Grotesk",sans-serif; font-weight:600; font-size:13.5px; margin-top:5px}
+  .gate .gcrit{font-size:11.8px; color:var(--muted); margin-top:4px}
+
+  .loopback{display:flex; align-items:center; gap:10px; margin-top:18px; color:var(--muted); font-size:13px}
+  .loopback .mono{color:var(--signal)}
+
+  /* ---------- VIEW STATES (toggle) ---------- */
+  body.view-coverage .domain{--pc:var(--mc)}
+  body.view-coverage .domain .cov{display:block}
+  body.view-coverage .phase-head{opacity:.55}
+  body.view-coverage .gate{opacity:.4}
+
+  /* ---------- STANDARDS ---------- */
+  .std{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .std .card{border:1px solid var(--line); border-radius:var(--radius); background:var(--panel); padding:14px}
+  .std h3{font-size:13.5px; margin-bottom:9px}
+  .std .dno{font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--faint); display:block; margin-bottom:4px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px}
+  .chip{font-family:"JetBrains Mono",monospace; font-size:10.5px; color:#b9c4d1; border:1px solid var(--line);
+    border-radius:5px; padding:3px 7px; background:var(--ink-2)}
+
+  /* ---------- DELIVERY MODEL ---------- */
+  .flow{display:grid; grid-template-columns:repeat(5,1fr); gap:0}
+  .step{border:1px solid var(--line); border-right:0; background:var(--panel); padding:18px 16px; position:relative}
+  .step:last-child{border-right:1px solid var(--line)}
+  .step:first-child{border-radius:var(--radius) 0 0 var(--radius)}
+  .step:last-child{border-radius:0 var(--radius) var(--radius) 0}
+  .step .sn{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--signal); letter-spacing:.1em}
+  .step h3{font-size:15px; margin:9px 0 4px}
+  .step .dur{font-family:"JetBrains Mono",monospace; font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:.1em}
+  .step p{font-size:12.6px; color:var(--muted); margin:10px 0 0}
+  .step .out{font-size:11.8px; color:#c2ccd8; margin-top:10px; padding-top:9px; border-top:1px dashed var(--line)}
+  .step .out b{color:var(--signal); font-weight:600; font-family:"JetBrains Mono",monospace; font-size:10px;
+    letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:3px}
+  .step::after{content:"→"; position:absolute; right:-9px; top:22px; color:var(--faint); font-size:15px; z-index:2}
+  .step:last-child::after{display:none}
+
+  /* ---------- IaC ANCHOR ---------- */
+  .iac{display:grid; grid-template-columns:1.1fr 1fr; gap:24px; align-items:start}
+  .iac .lead p{color:#cdd7e2; font-size:15px; max-width:52ch}
+  .iac ul{list-style:none; margin:14px 0 0; padding:0; display:flex; flex-direction:column; gap:10px}
+  .iac li{font-size:13.5px; color:#c2ccd8; padding-left:22px; position:relative}
+  .iac li::before{content:"›"; position:absolute; left:4px; top:-1px; color:var(--signal); font-weight:700}
+  pre{margin:0; background:var(--ink-2); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; overflow:auto; font-family:"JetBrains Mono",monospace; font-size:12px; line-height:1.65; color:#c8d3df}
+  pre .k{color:var(--p2)} pre .s{color:var(--signal)} pre .c{color:var(--faint)} pre .a{color:var(--p3)}
+
+  footer{padding:34px 0 60px; color:var(--faint); font-size:12px}
+  footer .mono{color:var(--muted)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:1080px){
+    .grid4{grid-template-columns:repeat(2,1fr)}
+    .std{grid-template-columns:repeat(2,1fr)}
+    .flow{grid-template-columns:1fr}
+    .step{border-right:1px solid var(--line); border-bottom:0; border-radius:0}
+    .step:first-child{border-radius:var(--radius) var(--radius) 0 0}
+    .step:last-child{border-radius:0 0 var(--radius) var(--radius); border-bottom:1px solid var(--line)}
+    .step::after{content:"↓"; right:auto; left:50%; transform:translateX(-50%); top:auto; bottom:-9px}
+    .iac{grid-template-columns:1fr}
+  }
+  @media(max-width:620px){
+    .grid4{grid-template-columns:1fr}
+    .std{grid-template-columns:1fr}
+    header.hero{padding:38px 0 24px}
+  }
+  @media(prefers-reduced-motion:reduce){*{transition:none !important; scroll-behavior:auto}}
+
+  /* reveal */
+  .rv{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease}
+  .rv.in{opacity:1; transform:none}
+</style>
+</head>
+<body class="view-target">
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">AI Security Operating Model</div>
+    <h1>From fragmented controls to <span class="dim">assured governance.</span></h1>
+    <p class="bluf">
+      AI security capability exists, but it is scattered across the lifecycle and uneven in depth. This model
+      packages <b>59 capabilities across 8 domains</b> into a single gated workflow that moves an organisation from
+      <b>unknown estate</b> to <b>audit-ready assurance</b>. Identity is treated as the primary perimeter; controls ship
+      as Terraform and policy-as-code; each phase has an exit gate that has to pass before work advances. Use the
+      <b>Today's Coverage</b> view to read the current-state diagnostic, then sell the delta.
+    </p>
+
+    <div class="herometa">
+      <div class="stat"><div class="n">4</div><div class="l">Lifecycle phases</div></div>
+      <div class="stat"><div class="n">8</div><div class="l">Capability domains</div></div>
+      <div class="stat"><div class="n">59</div><div class="l">Controls</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">Exit gates</div></div>
+    </div>
+
+    <div class="controls">
+      <div class="toggle" role="tablist" aria-label="View mode">
+        <button id="btn-target" class="on" role="tab" aria-selected="true">Target operating model</button>
+        <button id="btn-coverage" role="tab" aria-selected="false">Today's coverage</button>
+      </div>
+      <div class="legend">
+        <span class="lt">Maturity</span>
+        <span class="li"><span class="dot" style="background:var(--m-high)"></span>High</span>
+        <span class="li"><span class="dot" style="background:var(--m-modhigh)"></span>Mod-High</span>
+        <span class="li"><span class="dot" style="background:var(--m-mod)"></span>Moderate</span>
+        <span class="li"><span class="dot" style="background:var(--m-modlow)"></span>Mod-Low</span>
+        <span class="li"><span class="dot" style="background:var(--m-early)"></span>Early</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= OPERATING MODEL ================= -->
+<section id="model">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">01</span><h2>The gated lifecycle</h2></div>
+    <p class="sec-sub">
+      Four phases run as a continuous loop. Each phase owns two capability domains and ends in an exit gate.
+      Switch to <strong>Today's coverage</strong> to recolour every domain by current market maturity and read the
+      coverage statement underneath.
+    </p>
+
+    <div class="grid4" id="phases"></div>
+
+    <div class="loopback">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--signal)" stroke-width="2">
+        <path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg>
+      <span><span class="mono">Gate D</span> feeds discovery: assurance findings re-open the estate inventory and the loop repeats.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STANDARDS ================= -->
+<section id="standards">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">02</span><h2>Standards each domain answers to</h2></div>
+    <p class="sec-sub">
+      The sell is not the control list, it is defensible mapping. Every domain ties to named standards so audit and
+      regulatory questions have a pre-built answer.
+    </p>
+    <div class="std" id="std"></div>
+  </div>
+</section>
+
+<!-- ================= DELIVERY MODEL ================= -->
+<section id="delivery">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">03</span><h2>How it converts to an engagement</h2></div>
+    <p class="sec-sub">
+      The same model is the sales motion. Sell the diagnostic first, then the target, then the build. Each step has a
+      fixed deliverable a stakeholder can sign off.
+    </p>
+    <div class="flow" id="flow"></div>
+  </div>
+</section>
+
+<!-- ================= IaC ANCHOR ================= -->
+<section id="iac">
+  <div class="wrap">
+    <div class="sec-head"><span class="sec-no">04</span><h2>Built as code, enforced as policy</h2></div>
+    <div class="iac">
+      <div class="lead">
+        <p>
+          Controls that live in slideware do not survive contact with a release pipeline. This model assumes every
+          domain is expressed as infrastructure and policy-as-code, with the phase gates wired in as pipeline checks
+          that block a merge or a deploy when criteria fail.
+        </p>
+        <ul>
+          <li>Identity (GCP IAM, Entra ID) is the first thing modelled, before network or compute.</li>
+          <li>State files are encrypted, versioned, and access-controlled. Drift detection runs on a schedule.</li>
+          <li>Gates A to D are OPA or Sentinel policies, not review meetings.</li>
+          <li>Secure landing zones carry the baseline so new AI workloads inherit it by default.</li>
+        </ul>
+      </div>
+      <pre><span class="c"># gate B: secure-by-build, enforced in CI</span>
+<span class="k">package</span> ci.ai_release
+
+<span class="k">deny</span>[msg] {
+  input.scan.<span class="a">sast_critical</span> &gt; 0
+  msg := <span class="s">"SAST criticals must be zero"</span>
+}
+
+<span class="k">deny</span>[msg] {
+  <span class="k">not</span> input.tests.<span class="a">prompt_injection_passed</span>
+  msg := <span class="s">"injection suite must pass"</span>
+}
+
+<span class="k">deny</span>[msg] {
+  <span class="k">not</span> input.policy.<span class="a">as_code_enforced</span>
+  msg := <span class="s">"policy-as-code required"</span>
+}</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">AI Security Control Model — Technical Capabilities &amp; Market Maturity.</span>
+    A gated operating model rendered from the repository's <code>spec/</code> source of truth. Domain and control
+    names retained from source; maturity and coverage states as published; standards mapping and gate criteria are
+    analytical additions.
+  </div>
+</footer>
+
+<script>
+/* ---------- DATA ---------- */
+const PHASES = [
+  { n:"PHASE 1", name:"Plan & Discover", doing:"Inventory, classify, assess risk", color:"--p1",
+    gate:{ label:"Gate A", name:"Known estate",
+      crit:"AI assets inventoried, classified, owned and risk-scored. Non-human identities under management. No untracked Shadow AI above risk threshold." } },
+  { n:"PHASE 2", name:"Build & Develop", doing:"Design, code, test, validate", color:"--p2",
+    gate:{ label:"Gate B", name:"Secure by build",
+      crit:"SAST and secrets clean. Red team and injection suites passed. Policy-as-code enforced in CI/CD. No critical poisoning findings." } },
+  { n:"PHASE 3", name:"Deploy & Operate", doing:"Run, interact, monitor, protect", color:"--p3",
+    gate:{ label:"Gate C", name:"Protected in production",
+      crit:"Runtime guardrails and DLP live. Model registry signed. Monitoring and anomaly detection operational across data and model pipelines." } },
+  { n:"PHASE 4", name:"Govern & Assure", doing:"Govern, audit, comply, improve", color:"--p4",
+    gate:{ label:"Gate D", name:"Assured & auditable",
+      crit:"Controls mapped to NIST AI RMF, ISO 42001 and EU AI Act. Evidence captured, dashboards live, improvement loop running. Findings feed discovery." } },
+];
+
+const MAT = {
+  "mod-high":  {c:"--m-modhigh",  label:"Moderate-High"},
+  "moderate":  {c:"--m-mod",      label:"Moderate"},
+  "mod-low":   {c:"--m-modlow",   label:"Moderate-Low"},
+  "early-mod": {c:"--m-early",    label:"Early-Moderate"},
+};
+const COV = {
+  good:    "Good but fragmented",
+  partial: "Partial coverage",
+  limited: "Limited coverage",
+  vlimited:"Very limited coverage",
+};
+
+const DOMAINS = [
+  { phase:0, no:"D1", name:"AI Asset & Posture Management", mat:"mod-high", cov:"good",
+    note:"Well-established controls and tools.",
+    std:["NIST AI RMF · MAP","ISO/IEC 42001","CIS Benchmarks"],
+    caps:["AI Asset Inventory & Discovery","AI Inventory & Classification","Owner / Steward Mapping",
+      "Data & Model Lineage","Shadow AI Detection","Posture & Config Assessment","Risk Scoring & Prioritization"] },
+
+  { phase:0, no:"D2", name:"Identity & Access for Agents & AI", mat:"mod-high", cov:"good",
+    note:"Identity and access maturing for agents.",
+    std:["NIST SP 800-207","OWASP NHI Top 10","CIS IAM"],
+    caps:["Secure Non-human Identities","Agent Identity Management","MCP / Tool Authorization",
+      "Least Privilege Enforcement","Token & Session Control","Secrets / Credential Management",
+      "Entitlement & Policy Evaluation","Anomaly Detection (Agents & NHIs)"] },
+
+  { phase:1, no:"D3", name:"Development Security & AI App Testing", mat:"moderate", cov:"partial",
+    note:"Shift-left improving, gaps remain.",
+    std:["OWASP LLM Top 10","NIST SSDF 800-218","OWASP ASVS"],
+    caps:["Build Secure AI Systems","AI / SAST / Code Scanning","Secrets & Data Exposure Scanning",
+      "AI Red Teaming & Adversarial Testing","Prompt Injection Testing","Agent Behavior Testing",
+      "Model / Data Poisoning Testing","CI/CD Integration & Policy as Code"] },
+
+  { phase:1, no:"D4", name:"Runtime Protection & Interaction Security", mat:"moderate", cov:"partial",
+    note:"Runtime safeguards evolving.",
+    std:["OWASP LLM01","MITRE ATLAS","NIST AI RMF · MANAGE"],
+    caps:["Prompt Inspection & Content Filtering","PII / Secrets Detection","Jailbreak / Injection Detection",
+      "Output Safety / Policy Enforcement","Tool / Function Call Guardrails",
+      "Runtime Monitoring & Anomaly Detection","Response Validation & Blocking"] },
+
+  { phase:2, no:"D5", name:"Data Security for AI", mat:"mod-low", cov:"limited",
+    note:"Data controls improving but uneven.",
+    std:["ISO/IEC 27001","NIST AI RMF · MEASURE","UK GDPR / DPA 2018"],
+    caps:["Data Discovery & Classification","Access Control & Entitlements (RAG)","Data Loss Prevention (DLP)",
+      "Data Minimization & Masking","Data Lineage (AI Pipelines)","Retention & Destruction Controls",
+      "Data Usage Auditing"] },
+
+  { phase:2, no:"D6", name:"Model Security & Supply Chain", mat:"mod-low", cov:"limited",
+    note:"Model and supply chain security still early.",
+    std:["SLSA","CISA SBOM","NIST SSDF","MITRE ATLAS"],
+    caps:["Model Provenance & Lineage","Model Scanning (Malware / Backdoors)",
+      "Vulnerability Management (Models / Libraries)","AI Bill of Materials (AI BOM)",
+      "Secure Model Registry & Signing","Dependency & Third-Party Risk Management","Model Integrity Monitoring"] },
+
+  { phase:3, no:"D7", name:"Confidential AI & Infrastructure", mat:"early-mod", cov:"vlimited",
+    note:"Confidential AI and infrastructure emerging.",
+    std:["Confidential Computing Consortium","FIPS 140-3","ISO/IEC 27001"],
+    caps:["Confidential Computing","Encrypted Inference","Key Management (BYOK)","Private Data Processing",
+      "Secure Multi-Party Computation","Isolated Runtimes & Sandboxing","Infrastructure Hardening"] },
+
+  { phase:3, no:"D8", name:"Governance, Risk & Compliance", mat:"moderate", cov:"partial",
+    note:"Governance enabling, enforcement evolving.",
+    std:["ISO/IEC 42001","NIST AI RMF · GOVERN","EU AI Act"],
+    caps:["AI Risk Assessment","Model Risk Management","Regulatory Mapping & Controls","Audit Logging & Evidence",
+      "Reporting & Dashboards","Policy Management","Continuous Improvement","Continuous Monitoring & Assurance"] },
+];
+
+const FLOW = [
+  { sn:"STEP 1", h:"Diagnostic sprint", dur:"2–3 weeks",
+    p:"Score the current estate against all 8 domains. Run Shadow AI discovery and rank gaps by blast radius.",
+    out:"Maturity heat map + gap register" },
+  { sn:"STEP 2", h:"Target operating model", dur:"2 weeks",
+    p:"Define the secure target per domain. Identity as perimeter, control ownership set as a RACI.",
+    out:"Reference architecture + control catalogue" },
+  { sn:"STEP 3", h:"Roadmap & business case", dur:"1 week",
+    p:"Sequence the delta. Prioritise by coverage gap and risk reduction per pound spent.",
+    out:"Phased roadmap + cost/risk model" },
+  { sn:"STEP 4", h:"Build & embed", dur:"6–12 weeks",
+    p:"Ship landing zones, guardrails and gates as Terraform and policy-as-code wired into the pipeline.",
+    out:"IaC modules + OPA/Sentinel policies live" },
+  { sn:"STEP 5", h:"Assure & run", dur:"Ongoing",
+    p:"Continuous monitoring, evidence capture and audit mapping. Findings re-open discovery.",
+    out:"Dashboards + audit pack + improvement loop" },
+];
+
+/* ---------- RENDER: phases + domains + gates ---------- */
+const gateIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 13l4 4L19 7"/></svg>';
+
+const phasesEl = document.getElementById("phases");
+PHASES.forEach((ph, pi) => {
+  const col = document.createElement("div");
+  col.className = "phase";
+  col.style.setProperty("--pc", `var(${ph.color})`);
+
+  const ds = DOMAINS.filter(d => d.phase === pi).map(d => {
+    const m = MAT[d.mat];
+    return `
+      <article class="domain" style="--pc:var(${ph.color}); --mc:var(${m.c})">
+        <span class="mdot" title="${m.label}"></span>
+        <div class="dno">${d.no}</div>
+        <h3>${d.name}</h3>
+        <ul class="caps">${d.caps.map(c=>`<li>${c}</li>`).join("")}</ul>
+        <div class="cov">
+          <span class="badge">${COV[d.cov]}</span>
+          <div class="note">${d.note} · Maturity: ${m.label}</div>
+        </div>
+      </article>`;
+  }).join("");
+
+  col.innerHTML = `
+    <div class="phase-head">
+      <div class="phase-tag"><span class="phase-n">${ph.n}</span></div>
+      <div class="phase-name">${ph.name}</div>
+      <div class="phase-do">${ph.doing}</div>
+    </div>
+    ${ds}
+    <div class="gate" style="--pc:var(${ph.color})">
+      <div class="glabel" style="color:var(${ph.color})">${gateIcon} ${ph.gate.label} — exit criteria</div>
+      <div class="gname">${ph.gate.name}</div>
+      <div class="gcrit">${ph.gate.crit}</div>
+    </div>`;
+  phasesEl.appendChild(col);
+});
+
+/* ---------- RENDER: standards ---------- */
+const stdEl = document.getElementById("std");
+DOMAINS.forEach(d => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `
+    <span class="dno">${d.no}</span>
+    <h3>${d.name}</h3>
+    <div class="chips">${d.std.map(s=>`<span class="chip">${s}</span>`).join("")}</div>`;
+  stdEl.appendChild(card);
+});
+
+/* ---------- RENDER: delivery flow ---------- */
+const flowEl = document.getElementById("flow");
+FLOW.forEach(s => {
+  const step = document.createElement("div");
+  step.className = "step";
+  step.innerHTML = `
+    <div class="sn">${s.sn}</div>
+    <h3>${s.h}</h3>
+    <div class="dur">${s.dur}</div>
+    <p>${s.p}</p>
+    <div class="out"><b>Deliverable</b>${s.out}</div>`;
+  flowEl.appendChild(step);
+});
+
+/* ---------- TOGGLE ---------- */
+const bT = document.getElementById("btn-target");
+const bC = document.getElementById("btn-coverage");
+function setView(v){
+  document.body.classList.toggle("view-target", v==="target");
+  document.body.classList.toggle("view-coverage", v==="coverage");
+  bT.classList.toggle("on", v==="target"); bT.setAttribute("aria-selected", v==="target");
+  bC.classList.toggle("on", v==="coverage"); bC.setAttribute("aria-selected", v==="coverage");
+}
+bT.addEventListener("click", ()=>setView("target"));
+bC.addEventListener("click", ()=>setView("coverage"));
+
+/* ---------- REVEAL ---------- */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+}, {threshold:.12});
+document.querySelectorAll("section").forEach((s,i)=>{ s.classList.add("rv"); io.observe(s); });
+</script>
+</body>
+</html>

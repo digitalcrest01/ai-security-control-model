@@ -4,9 +4,14 @@
 Single source of truth -> spec/*.yaml + per-domain directories.
 Re-runnable: rewrites generated files, leaves hand-authored files alone.
 """
-import os, textwrap, pathlib
+import os, sys, textwrap, pathlib
 
 ROOT = pathlib.Path(os.environ.get("REPO", ".")).resolve()
+
+# --force regenerates the create-if-missing scaffold files too (domain READMEs,
+# controls.yaml, terraform, policies). Without it those are written once and
+# then left alone so human implementation work is never clobbered.
+FORCE_ALL = "--force" in sys.argv
 
 PHASES = [
     dict(idx=0, id="p1-plan-discover",  n="PHASE 1", name="Plan & Discover",
@@ -134,8 +139,19 @@ FLOW = [
 ]
 
 
-def w(rel, content):
+def w(rel, content, force=True):
+    """Write a generated file.
+
+    force=True  -> always (re)written; this is the source-of-truth output
+                   (spec/*.yaml) that CI verifies stays in lockstep.
+    force=False -> create-if-missing scaffold; once it exists it is human-owned
+                   and never clobbered (domain READMEs, controls.yaml, terraform,
+                   policies). Pass --force to regenerate these too.
+    """
     p = ROOT / rel
+    if p.exists() and not force and not FORCE_ALL:
+        print("skip (exists)", rel)
+        return
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(textwrap.dedent(content).lstrip("\n"), encoding="utf-8")
     print("wrote", rel)
@@ -312,7 +328,7 @@ def gen_domain_dirs():
         3. Ensure the relevant assertion is exercised by
            `gates/{ph['gate']['slug']}.rego` so the phase gate can see it.
         """
-        w(f"{base}/README.md", readme)
+        w(f"{base}/README.md", readme, force=False)
 
         # controls.yaml (domain-scoped slice)
         cy = [f"# {d['no']} — {d['name']}",
@@ -330,7 +346,7 @@ def gen_domain_dirs():
                    f"    status: not_started",
                    f"    owner: TODO",
                    f"    evidence: []"]
-        w(f"{base}/controls.yaml", "\n".join(cy) + "\n")
+        w(f"{base}/controls.yaml", "\n".join(cy) + "\n", force=False)
 
         # terraform stub
         modname = d["slug"].replace("-", "_")
@@ -371,7 +387,7 @@ def gen_domain_dirs():
           value       = local.controls
         }}
         """
-        w(f"{base}/terraform/main.tf", tf)
+        w(f"{base}/terraform/main.tf", tf, force=False)
 
         # policy stub
         pkg = "domain." + d["slug"].replace("-", "_")
@@ -389,7 +405,7 @@ def gen_domain_dirs():
         #   msg := sprintf("control %v is not started", [c.id])
         # }}
         """
-        w(f"{base}/policies/{d['slug']}.rego", rego)
+        w(f"{base}/policies/{d['slug']}.rego", rego, force=False)
 
 
 gen_phases()

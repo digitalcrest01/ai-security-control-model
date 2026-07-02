@@ -3,6 +3,10 @@
 *.tfstate
 *.tfstate.*
 *.tfplan
+plan.bin
+plan.json
+terraform.tfvars
+*.auto.tfvars
 crash.log
 crash.*.log
 override.tf
@@ -15,6 +19,9 @@ terraform.rc
 
 # OPA / policy tooling
 *.bundle.tar.gz
+
+# Collected evidence artifacts (regenerated from IaC + inventory)
+gate-*.evidence.json
 
 # Python (tools/)
 __pycache__/

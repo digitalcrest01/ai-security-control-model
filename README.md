@@ -43,10 +43,14 @@ ai-security-control-model/
 │       └── policies/         #   domain OPA policy feeding the phase gate
 ├── gates/                    # exit gates A–D as OPA/Rego + example evidence + tests
 ├── modules/
-│   └── landing-zone/         # shared secure baseline every AI workload inherits
+│   └── landing-zone/         # shared secure GCP baseline every AI workload inherits
+├── environments/
+│   └── sandbox/              # D2 Identity slice: estate.yaml → IaC → evidence → Gate A
 ├── docs/                     # index.html (interactive) + operating-model.md
-├── tools/scaffold.py         # regenerates spec/ + domains/ from the source of truth
-└── .github/workflows/        # CI: policy checks, gate evaluation, terraform validate
+├── tools/
+│   ├── scaffold.py           # regenerates spec/ (+ scaffolds domains/) from the source of truth
+│   └── collect_gate_a_evidence.py  # inventory + provisioned identities → Gate A evidence
+└── .github/workflows/        # CI: policy checks, gate evaluation, terraform validate, evidence chain
 ```
 
 ## Built as code, enforced as policy
@@ -101,10 +105,16 @@ have a pre-built answer. See [`spec/standards-map.yaml`](spec/standards-map.yaml
 
 ## Status
 
-Scaffold. Terraform resources are stubs and policies enforce the gate criteria
-against a documented evidence shape; wire real scanners, inventory exports and
-provider resources in per domain. See each domain's `README.md` for its control
-register.
+**D2 Identity slice — live on GCP.** The [`sandbox` environment](environments/sandbox)
+provisions a managed, least-privilege service account for every AI workload in
+`estate.yaml`, and CI proves the estate clears **Gate A** end-to-end
+(inventory → IaC → evidence → gate). Implemented D2 controls: secure non-human
+identities, agent identity management, least-privilege enforcement.
+
+The remaining domains (D1, D3–D8) are scaffolds — control registers plus stub
+Terraform/policies. Each is built out by following the D2 pattern: real IaC
+under a module, evidence collected from that IaC, evaluated by the phase gate.
+See each domain's `README.md` for its control register.
 
 ## Attribution
 

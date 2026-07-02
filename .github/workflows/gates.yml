@@ -69,14 +69,51 @@ jobs:
       - name: terraform fmt (check)
         run: terraform fmt -check -recursive
 
-      - name: terraform validate (each module)
+      - name: terraform validate (each module & environment)
         run: |
           set -euo pipefail
-          for dir in modules/landing-zone domains/*/terraform; do
+          for dir in modules/* environments/* domains/*/terraform; do
+            ls "$dir"/*.tf >/dev/null 2>&1 || continue
             echo "== validating $dir =="
             terraform -chdir="$dir" init -backend=false -input=false >/dev/null
             terraform -chdir="$dir" validate
           done
+
+  evidence:
+    name: Gate A evidence chain (D2 slice)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
+      - name: Install OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+
+      # Build Gate A evidence from the estate inventory + the provisioned
+      # identities (fixture stands in for `terraform show -json` since CI has no
+      # cloud credentials), then prove the gate passes on that derived evidence.
+      - name: Collect evidence & evaluate Gate A
+        run: |
+          set -euo pipefail
+          python3 tools/collect_gate_a_evidence.py \
+            --estate environments/sandbox/estate.yaml \
+            --provisioned environments/sandbox/provisioned.sample.json \
+            --out gate-a.evidence.json
+          echo "--- derived evidence ---"; cat gate-a.evidence.json
+          deny=$(opa eval -f raw -d gates -i gate-a.evidence.json 'data.gates.gate_a.deny')
+          if [ "$deny" != "[]" ]; then
+            echo "::error::Gate A failed on collected evidence: $deny"
+            exit 1
+          fi
+          echo "Gate A on collected D2-slice evidence: PASS"
 
   spec:
     name: Spec integrity
@@ -87,20 +124,15 @@ jobs:
         with:
           python-version: "3.12"
 
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.9.8"
-
-      # Regenerating from the source of truth (then formatting, exactly as the
-      # documented local workflow does) must produce no diff — spec/ and
-      # domains/ stay in lockstep with tools/scaffold.py.
-      - name: Scaffold is in sync with spec
+      # spec/*.yaml is the generated source of truth and must stay in lockstep
+      # with tools/scaffold.py. Domain working files (READMEs, controls.yaml,
+      # terraform, policies) are scaffolded once then human-owned, so they are
+      # intentionally NOT diffed here.
+      - name: spec/ is in sync with the generator
         run: |
           set -euo pipefail
           REPO="$PWD" python3 tools/scaffold.py
-          terraform fmt -recursive
-          if ! git diff --quiet; then
-            echo "::error::Generated files are out of sync. Run tools/scaffold.py and commit."
-            git --no-pager diff --stat
+          if ! git diff --exit-code -- spec/; then
+            echo "::error::spec/ is out of sync. Run 'python3 tools/scaffold.py' and commit."
             exit 1
           fi

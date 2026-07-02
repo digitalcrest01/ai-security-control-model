@@ -1,0 +1,46 @@
+# AI estate inventory — the source of truth for the sandbox environment.
+#
+# This is what Gate A ("Known estate") is evaluated against. Every AI workload /
+# agent that runs in this environment MUST be listed here with an owner, a data
+# classification, and a risk score, and MUST be provisioned as a managed
+# non-human identity (Terraform turns each entry into a least-privilege service
+# account in the landing zone).
+#
+# Adding an AI workload = adding an entry here. Anything running that is NOT here
+# is Shadow AI (see shadow_ai below) and will trip the gate if it is high risk.
+
+assets:
+  - id: rag-search
+    description: "Retrieval-augmented search agent over the docs corpus"
+    owner: platform-eng
+    data_class: internal
+    risk_score: 3
+    roles:
+      - roles/aiplatform.user
+      - roles/secretmanager.secretAccessor
+
+  - id: support-bot
+    description: "Customer support assistant (read-only knowledge base)"
+    owner: cx-eng
+    data_class: confidential
+    risk_score: 5
+    roles:
+      - roles/aiplatform.user
+
+  - id: batch-summariser
+    description: "Nightly document summarisation job"
+    owner: data-platform
+    data_class: internal
+    risk_score: 2
+    roles:
+      - roles/aiplatform.user
+      - roles/storage.objectViewer
+
+# Shadow AI discovered by scanning (not provisioned by this repo). Each entry
+# over the risk threshold fails Gate A until it is brought under management
+# (promoted into `assets` above) or decommissioned.
+shadow_ai: []
+
+thresholds:
+  # Shadow AI at or above this risk score fails the gate.
+  shadow_ai_risk: 4

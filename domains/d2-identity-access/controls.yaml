@@ -9,14 +9,17 @@ coverage: Good but fragmented
 controls:
   - id: D2-01
     name: Secure Non-human Identities
-    status: not_started
-    owner: TODO
-    evidence: []
+    status: implemented
+    owner: platform-eng
+    evidence:
+      - modules/landing-zone/main.tf#google_service_account.workload  # dedicated SA per workload, no user-managed keys
+      - environments/sandbox/estate.yaml                              # every NHI inventoried
   - id: D2-02
     name: Agent Identity Management
-    status: not_started
-    owner: TODO
-    evidence: []
+    status: implemented
+    owner: platform-eng
+    evidence:
+      - environments/sandbox/main.tf   # one managed identity per AI asset, driven from the inventory
   - id: D2-03
     name: MCP / Tool Authorization
     status: not_started
@@ -24,9 +27,10 @@ controls:
     evidence: []
   - id: D2-04
     name: Least Privilege Enforcement
-    status: not_started
-    owner: TODO
-    evidence: []
+    status: implemented
+    owner: platform-eng
+    evidence:
+      - modules/landing-zone/main.tf#google_project_iam_member.workload  # only the roles each identity declares
   - id: D2-05
     name: "Token & Session Control"
     status: not_started
@@ -34,9 +38,10 @@ controls:
     evidence: []
   - id: D2-06
     name: Secrets / Credential Management
-    status: not_started
-    owner: TODO
-    evidence: []
+    status: in_progress
+    owner: platform-eng
+    evidence:
+      - environments/sandbox/estate.yaml  # secretAccessor scoped per identity; Secret Manager resources still TODO
   - id: D2-07
     name: "Entitlement & Policy Evaluation"
     status: not_started

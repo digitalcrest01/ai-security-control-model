@@ -1,13 +1,9 @@
-# Shared secure landing zone (stub).
+# Shared secure landing zone (GCP).
 #
 # The baseline every new AI workload inherits by default. Ordering is deliberate:
-# identity is modelled first, then key management, then network/compute hardening.
-# Replace the null_resource placeholders with real provider resources
-# (google_*, azurerm_*) as the baseline is implemented.
-
-terraform {
-  required_version = ">= 1.6.0"
-}
+# identity is modelled first, then key management (BYOK), then a versioned,
+# access-controlled artifact store. Network/compute hardening is layered on top
+# by domain modules.
 
 locals {
   name_prefix = "aiscm-${var.environment}"
@@ -17,45 +13,74 @@ locals {
     "env"        = var.environment
     "baseline"   = "landing-zone"
   }, var.labels)
+
+  # Flatten {identity => roles[]} into one binding per (identity, role) pair.
+  iam_bindings = merge([
+    for id_key, cfg in var.workload_identities : {
+      for role in cfg.roles :
+      "${id_key}::${role}" => { id_key = id_key, role = role }
+    }
+  ]...)
 }
 
 # --- 1. Identity (primary perimeter) -----------------------------------------
-# Non-human identities for AI workloads/agents, least privilege by construction.
-# TODO: replace with google_service_account / azuread_service_principal + IAM.
-resource "null_resource" "workload_identity" {
+# One dedicated service account per AI workload/agent. No user-managed keys are
+# created, so these are managed non-human identities by construction (callers
+# authenticate via workload identity / ADC, not exported key files).
+resource "google_service_account" "workload" {
   for_each = var.workload_identities
 
-  triggers = {
-    name        = "${local.name_prefix}-${each.key}"
-    roles       = join(",", each.value.roles)
-    description = each.value.description
-  }
+  project      = var.project_id
+  account_id   = each.key
+  display_name = "AI workload: ${each.key}"
+  description  = each.value.description
+}
+
+# Least-privilege project IAM: only the roles each identity declares.
+resource "google_project_iam_member" "workload" {
+  for_each = local.iam_bindings
+
+  project = var.project_id
+  role    = each.value.role
+  member  = "serviceAccount:${google_service_account.workload[each.value.id_key].email}"
 }
 
 # --- 2. Key management (BYOK) ------------------------------------------------
-# TODO: replace with google_kms_key_ring/key or azurerm_key_vault_key.
-resource "null_resource" "kms" {
-  triggers = {
-    name = "${local.name_prefix}-kms"
+# Customer-managed key material for encrypted inference / private data
+# processing. Rotated on a schedule; protected from accidental destruction.
+resource "google_kms_key_ring" "byok" {
+  project  = var.project_id
+  name     = "${local.name_prefix}-byok"
+  location = var.region
+}
+
+resource "google_kms_crypto_key" "byok" {
+  name     = "${local.name_prefix}-inference"
+  key_ring = google_kms_key_ring.byok.id
+
+  rotation_period = var.key_rotation_period
+  labels          = local.base_labels
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
-# --- 3. Encrypted, versioned, access-controlled state backend ---------------
-# State files must be encrypted, versioned and access-controlled; drift
-# detection runs on a schedule (wired in CI, not here).
-# TODO: replace with google_storage_bucket / azurerm_storage_account.
-resource "null_resource" "state_backend" {
-  triggers = {
-    name       = "${local.name_prefix}-tfstate"
-    versioning = "enabled"
-    encryption = "cmek"
-  }
-}
+# --- 3. Versioned, access-controlled artifact store -------------------------
+# Encrypted (Google-managed by default; attach the BYOK key for CMEK), versioned,
+# and locked down: uniform bucket-level access and public access prevention.
+resource "google_storage_bucket" "artifacts" {
+  project  = var.project_id
+  name     = "${local.name_prefix}-${var.project_id}-artifacts"
+  location = var.region
 
-# --- 4. Network / compute hardening baseline --------------------------------
-# TODO: private networking, egress controls, hardened compute images.
-resource "null_resource" "hardening_baseline" {
-  triggers = {
-    name = "${local.name_prefix}-hardening"
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+  force_destroy               = false
+
+  versioning {
+    enabled = true
   }
+
+  labels = local.base_labels
 }

@@ -30,11 +30,26 @@ inventory that Gate A guards.
 | **4** lifecycle phases | **8** capability domains |
 | **59** controls | **4** exit gates |
 
+## Two views of the same estate
+
+The lifecycle model above answers *"**when** in delivery is a control owned?"*
+The [**Threat → Technical-Control Catalogue**](docs/threat-control-catalogue.md)
+answers the orthogonal question *"**what** AI/agent risk does a control answer,
+and **where** in the architecture is it enforced?"* — mapping **24 risks** to
+**60 technical capabilities**, each pinned to one of **12 control-plane layers**
+(Runtime Mediation, Authorization, Tool Gateway, …) and mapped back to a domain
+and gate. It also carries a **build-vs-buy** signal from market coverage, which
+surfaces the **12 controls no vendor sells** — the ones this framework must
+specify natively. Use it to threat-model a workload into a ready-made control
+set; use the lifecycle model to drive it through the gates.
+
 ## Repository layout
 
 ```
 ai-security-control-model/
 ├── spec/                     # source of truth (YAML) — phases, domains, controls, standards, gates
+│   ├── threat-control-catalogue.yaml   #   risk-driven view: 24 risks → 60 technical controls
+│   └── control-plane-layers.yaml       #   12 architectural enforcement points → domains
 ├── domains/                  # one directory per capability domain (D1–D8)
 │   └── <slug>/
 │       ├── README.md         #   domain overview + control register
@@ -46,7 +61,7 @@ ai-security-control-model/
 │   └── landing-zone/         # shared secure GCP baseline every AI workload inherits
 ├── environments/
 │   └── sandbox/              # D2 Identity slice: estate.yaml → IaC → evidence → Gate A
-├── docs/                     # index.html (interactive) + operating-model.md
+├── docs/                     # index.html (interactive) + operating-model.md + threat-control-catalogue.md
 ├── tools/
 │   ├── scaffold.py           # regenerates spec/ (+ scaffolds domains/) from the source of truth
 │   └── collect_gate_a_evidence.py  # inventory + provisioned identities → Gate A evidence

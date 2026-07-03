@@ -143,6 +143,17 @@ Terraform/policies. Each is built out by following the D2 pattern: real IaC
 under a module, evidence collected from that IaC, evaluated by the phase gate.
 See each domain's `README.md` for its control register.
 
+## Contributing
+
+Contributions are welcome from anyone — new domain slices, real Terraform/policy
+implementations, gate criteria, standards mappings. See
+[`CONTRIBUTING.md`](CONTRIBUTING.md) for the workflow and the checks CI runs.
+
+## License
+
+Released under the [MIT License](LICENSE) — free to use, modify and distribute,
+including commercially. © 2026 Vertotech LLC.
+
 ## Attribution
 
 Domain and control names retained from the source capability model; maturity and

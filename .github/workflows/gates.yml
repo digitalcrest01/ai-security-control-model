@@ -56,6 +56,20 @@ jobs:
           done
           exit $fail
 
+      # The operational use of the catalogue: a workload's risk exposure + its
+      # control-implementation status, evaluated against a chosen exit gate.
+      - name: Evaluate workload control-set gate (example)
+        run: |
+          set -euo pipefail
+          args=(-d gates -d spec/threat-control-catalogue.json -i gates/examples/workload.input.json)
+          allow=$(opa eval -f raw "${args[@]}" 'data.platform.workload.allow')
+          if [ "$allow" != "true" ]; then
+            deny=$(opa eval -f raw "${args[@]}" 'data.platform.workload.deny')
+            echo "::error::Example workload did not clear its gate: $deny"
+            exit 1
+          fi
+          echo "Workload control-set gate: PASS"
+
   terraform:
     name: Terraform fmt & validate
     runs-on: ubuntu-latest
@@ -124,6 +138,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install deps
+        run: pip install --quiet pyyaml
+
       # spec/*.yaml is the generated source of truth and must stay in lockstep
       # with tools/scaffold.py. Domain working files (READMEs, controls.yaml,
       # terraform, policies) are scaffolded once then human-owned, so they are
@@ -134,5 +151,16 @@ jobs:
           REPO="$PWD" python3 tools/scaffold.py
           if ! git diff --exit-code -- spec/; then
             echo "::error::spec/ is out of sync. Run 'python3 tools/scaffold.py' and commit."
+            exit 1
+          fi
+
+      # The hand-authored threat catalogue is validated (IDs, cross-refs, enums)
+      # and its flattened JSON view must match the committed file.
+      - name: Threat catalogue is valid and its JSON view is in sync
+        run: |
+          set -euo pipefail
+          REPO="$PWD" python3 tools/validate_catalogue.py
+          if ! git diff --exit-code -- spec/threat-control-catalogue.json; then
+            echo "::error::spec/threat-control-catalogue.json is out of sync. Run 'python3 tools/validate_catalogue.py' and commit."
             exit 1
           fi

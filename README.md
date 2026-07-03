@@ -43,6 +43,20 @@ surfaces the **12 controls no vendor sells** — the ones this framework must
 specify natively. Use it to threat-model a workload into a ready-made control
 set; use the lifecycle model to drive it through the gates.
 
+The catalogue is **operational, not just descriptive**:
+
+- **Validated as code** — [`tools/validate_catalogue.py`](tools/validate_catalogue.py)
+  checks IDs, cross-references and enums and emits a flattened
+  [`spec/threat-control-catalogue.json`](spec/threat-control-catalogue.json); CI
+  blocks drift.
+- **Enforced as a gate** — [`gates/workload-controls.rego`](gates/workload-controls.rego)
+  takes a workload's *risk exposure* + *control-implementation status* and
+  returns a pass/deny verdict for any exit gate A–D.
+- **Shown as a product** — the [`prototype/`](prototype) console
+  ([`docs/prototype.html`](docs/prototype.html)) lets an architect register a
+  workload, declare its risks, and watch the gate verdict compute live — running
+  the *same rule* as the OPA policy.
+
 ## Repository layout
 
 ```
@@ -57,13 +71,16 @@ ai-security-control-model/
 │       ├── terraform/        #   IaC that implements the controls (stubs)
 │       └── policies/         #   domain OPA policy feeding the phase gate
 ├── gates/                    # exit gates A–D as OPA/Rego + example evidence + tests
+│   └── workload-controls.rego      #   operational gate: a workload's risk exposure → gate verdict
 ├── modules/
 │   └── landing-zone/         # shared secure GCP baseline every AI workload inherits
 ├── environments/
 │   └── sandbox/              # D2 Identity slice: estate.yaml → IaC → evidence → Gate A
-├── docs/                     # index.html (interactive) + operating-model.md + threat-control-catalogue.md
+├── prototype/                # Control Plane console prototype + GCP (Cloud Run) deployment stub
+├── docs/                     # index.html + operating-model.md + threat-control-catalogue.md + prototype.html
 ├── tools/
 │   ├── scaffold.py           # regenerates spec/ (+ scaffolds domains/) from the source of truth
+│   ├── validate_catalogue.py # validates the threat catalogue + emits its flattened JSON view
 │   └── collect_gate_a_evidence.py  # inventory + provisioned identities → Gate A evidence
 └── .github/workflows/        # CI: policy checks, gate evaluation, terraform validate, evidence chain
 ```

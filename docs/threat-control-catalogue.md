@@ -266,6 +266,25 @@ signal and treats the vendor list as informative context:
    the control register is thin (D4 today). Expanding a domain's `controls.yaml`
    toward its `TC-*` set is a concrete, risk-justified backlog.
 
+## Operational, not just descriptive
+
+The catalogue is wired into the same as-code enforcement as the rest of the model:
+
+| Capability | Where | What it does |
+|---|---|---|
+| **Validation** | [`tools/validate_catalogue.py`](../tools/validate_catalogue.py) | Checks IDs are contiguous, every `layer`/`domain`/`gate` resolves, signals match the platform band; emits the flattened [`spec/threat-control-catalogue.json`](../spec/threat-control-catalogue.json). CI fails on drift. |
+| **Workload gate** | [`gates/workload-controls.rego`](../gates/workload-controls.rego) | Given a workload's `applicable_risks` + `control_status`, returns a pass/deny verdict for a chosen gate. Example: [`gates/examples/workload.input.json`](../gates/examples/workload.input.json). |
+| **Console prototype** | [`prototype/`](../prototype) · [`prototype.html`](prototype.html) | Interactive UI to register a workload, declare risk exposure, and see controls + gate verdict compute live — running the same rule as the OPA policy. |
+
+Evaluate a workload against a gate the way CI does:
+
+```bash
+opa eval -d gates -d spec/threat-control-catalogue.json \
+  -i gates/examples/workload.input.json \
+  'data.platform.workload.summary'
+# => { "workload": "acme-support-agent", "gate": "B", "required": 15, "blocking": 0, "allow": true }
+```
+
 ## Maintenance
 
 - The YAML files are the source of truth; this document's tables are generated

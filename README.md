@@ -52,10 +52,6 @@ The catalogue is **operational, not just descriptive**:
 - **Enforced as a gate** — [`gates/workload-controls.rego`](gates/workload-controls.rego)
   takes a workload's *risk exposure* + *control-implementation status* and
   returns a pass/deny verdict for any exit gate A–D.
-- **Shown as a product** — the [`prototype/`](prototype) console
-  ([`docs/prototype.html`](docs/prototype.html)) lets an architect register a
-  workload, declare its risks, and watch the gate verdict compute live — running
-  the *same rule* as the OPA policy.
 
 ## Repository layout
 
@@ -76,8 +72,7 @@ ai-security-control-model/
 │   └── landing-zone/         # shared secure GCP baseline every AI workload inherits
 ├── environments/
 │   └── sandbox/              # D2 Identity slice: estate.yaml → IaC → evidence → Gate A
-├── prototype/                # Control Plane console prototype + GCP (Cloud Run) deployment stub
-├── docs/                     # index.html + operating-model.md + threat-control-catalogue.md + prototype.html
+├── docs/                     # index.html + operating-model.md + threat-control-catalogue.md
 ├── tools/
 │   ├── scaffold.py           # regenerates spec/ (+ scaffolds domains/) from the source of truth
 │   ├── validate_catalogue.py # validates the threat catalogue + emits its flattened JSON view

@@ -9,9 +9,8 @@ Checks internal consistency (IDs, cross-references, enums) and, unless
 --check-only, writes a flattened machine-readable view to
   spec/threat-control-catalogue.json
 
-That JSON is the single source consumed by:
-  - the OPA workload gate  (gates/workload-controls.rego -> data.catalogue)
-  - the platform prototype (docs/prototype.html)
+That JSON is consumed by the OPA workload gate
+(gates/workload-controls.rego -> data.catalogue).
 
 Exit code is non-zero if any check fails, so CI blocks drift.
 

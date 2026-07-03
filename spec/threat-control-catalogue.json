@@ -8,10 +8,10 @@
       "layers": 12
     },
     "signals": {
-      "build": 12,
       "emerging": 9,
-      "buy_select": 22,
-      "commodity": 17
+      "commodity": 17,
+      "build": 12,
+      "buy_select": 22
     },
     "domain_primary": {
       "D1": 1,

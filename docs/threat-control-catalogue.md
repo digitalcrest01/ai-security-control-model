@@ -274,7 +274,6 @@ The catalogue is wired into the same as-code enforcement as the rest of the mode
 |---|---|---|
 | **Validation** | [`tools/validate_catalogue.py`](../tools/validate_catalogue.py) | Checks IDs are contiguous, every `layer`/`domain`/`gate` resolves, signals match the platform band; emits the flattened [`spec/threat-control-catalogue.json`](../spec/threat-control-catalogue.json). CI fails on drift. |
 | **Workload gate** | [`gates/workload-controls.rego`](../gates/workload-controls.rego) | Given a workload's `applicable_risks` + `control_status`, returns a pass/deny verdict for a chosen gate. Example: [`gates/examples/workload.input.json`](../gates/examples/workload.input.json). |
-| **Console prototype** | [`prototype/`](../prototype) · [`prototype.html`](prototype.html) | Interactive UI to register a workload, declare risk exposure, and see controls + gate verdict compute live — running the same rule as the OPA policy. |
 
 Evaluate a workload against a gate the way CI does:
 

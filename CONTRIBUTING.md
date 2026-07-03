@@ -5,8 +5,9 @@ built as code. Contributions keep three things true: the tree matches the spec,
 the policies parse and pass, and Terraform is valid and formatted. CI enforces
 all three.
 
-> Proprietary — see [`LICENSE`](LICENSE). Contribute only under the applicable
-> agreement.
+> **Open source — MIT licensed.** Contributions are welcome from anyone. By
+> submitting a contribution you agree it is released under the project's
+> [MIT license](LICENSE), free for anyone to use, modify and distribute.
 
 ## Prerequisites
 

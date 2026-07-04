@@ -1,0 +1,31 @@
+{
+  "workload": {
+    "id": "acme-support-agent",
+    "name": "Customer support RAG agent"
+  },
+  "gate": "B",
+  "applicable_risks": [
+    "R-MU-01",
+    "R-MU-03",
+    "R-MU-07",
+    "R-AG-01"
+  ],
+  "control_status": {
+    "TC-015": "implemented",
+    "TC-016": "verified",
+    "TC-017": "implemented",
+    "TC-018": "implemented",
+    "TC-022": "implemented",
+    "TC-023": "verified",
+    "TC-024": "implemented",
+    "TC-025": "implemented",
+    "TC-036": "implemented",
+    "TC-037": "implemented",
+    "TC-038": "verified",
+    "TC-039": "implemented",
+    "TC-040": "implemented",
+    "TC-041": "implemented",
+    "TC-042": "implemented",
+    "TC-043": "verified"
+  }
+}

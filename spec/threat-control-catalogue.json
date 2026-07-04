@@ -1,0 +1,1279 @@
+{
+  "catalogue": {
+    "version": 1,
+    "generated_by": "tools/validate_catalogue.py",
+    "counts": {
+      "controls": 60,
+      "risks": 24,
+      "layers": 12
+    },
+    "signals": {
+      "build": 12,
+      "emerging": 9,
+      "buy_select": 22,
+      "commodity": 17
+    },
+    "domain_primary": {
+      "D1": 1,
+      "D2": 5,
+      "D3": 7,
+      "D4": 35,
+      "D5": 3,
+      "D6": 2,
+      "D7": 2,
+      "D8": 5
+    },
+    "layers": [
+      {
+        "id": "runtime-mediation",
+        "name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "enforcement_point": "Inline request/response interception at inference time.",
+        "description": "The pre- and post-processing pipeline that inspects, transforms, or blocks prompts and model outputs on the live request path. Where grounding, guardrail enforcement, output moderation and schema validation execute.\n"
+      },
+      {
+        "id": "observability",
+        "name": "Observability",
+        "domains": [
+          "D4",
+          "D8"
+        ],
+        "gate": "B",
+        "enforcement_point": "Telemetry, tracing and behavioral baselining over model/agent behavior.",
+        "description": "Non-blocking capture of inference telemetry, reasoning traces, behavioral baselines and drift/anomaly signals. Feeds runtime detection (D4) and the audit/evidence chain (D8). Detects rather than prevents.\n"
+      },
+      {
+        "id": "continuous-testing",
+        "name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "enforcement_point": "Pre-deployment and drift-triggered evaluation harnesses.",
+        "description": "Adversarial/fuzzing harnesses, behavioral benchmark and regression suites, capability-elicitation probes and agent-workflow red-teaming, run in CI and re-triggered on drift. The proving ground before a change can exit Gate B.\n"
+      },
+      {
+        "id": "authorization",
+        "name": "Authorization",
+        "domains": [
+          "D2"
+        ],
+        "gate": "A",
+        "enforcement_point": "Policy decision/enforcement for what an identity or agent may do.",
+        "description": "Capability-scoping, least-privilege tool/action scoping and policy-as-code action guardrails evaluated per request. The agent-era extension of identity and entitlement enforcement.\n"
+      },
+      {
+        "id": "data-boundary",
+        "name": "Data Boundary",
+        "domains": [
+          "D5",
+          "D4"
+        ],
+        "gate": "C",
+        "enforcement_point": "The trust boundary where data enters or leaves the model.",
+        "description": "Input sanitization/normalization, sensitive-data classification and need-to-know, DLP, PII/secret-leakage detection and encrypted inference — controls that police what data crosses into context and out through output.\n"
+      },
+      {
+        "id": "kill-switch",
+        "name": "Kill Switch",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "enforcement_point": "Fail-safe interruption of a running model or agent.",
+        "description": "Circuit breakers, automated containment/rollback triggers and graceful degradation/fail-safe fallback. The last-resort control that halts unsafe behavior when detection fires.\n"
+      },
+      {
+        "id": "tool-gateway",
+        "name": "Tool Gateway",
+        "domains": [
+          "D2",
+          "D4"
+        ],
+        "gate": "B",
+        "enforcement_point": "Broker mediating agent-to-tool / MCP calls.",
+        "description": "The mediation point for every tool or MCP invocation an agent makes: brokering, rate limiting/abuse throttling, and signed tool-manifest / provenance verification. The choke point for agentic supply-chain trust.\n"
+      },
+      {
+        "id": "memory-governance",
+        "name": "Memory Governance",
+        "domains": [
+          "D4",
+          "D5"
+        ],
+        "gate": "B",
+        "enforcement_point": "Integrity, provenance and bounding of agent context/memory.",
+        "description": "Source validation and isolation of context, context-poisoning / memory integrity detection, and memory-horizon bounding. Emerging enforcement point specific to stateful, long-running agents.\n"
+      },
+      {
+        "id": "sandbox",
+        "name": "Sandbox",
+        "domains": [
+          "D7"
+        ],
+        "gate": "D",
+        "enforcement_point": "Isolated execution environment for agent actions and inference.",
+        "description": "Action sandboxing and execution isolation — running consequential agent actions inside a contained, revocable runtime so blast radius is bounded by construction.\n"
+      },
+      {
+        "id": "inventory",
+        "name": "Inventory",
+        "domains": [
+          "D1"
+        ],
+        "gate": "A",
+        "enforcement_point": "Discovery and registration of agents, models and AI assets.",
+        "description": "Continuous discovery and inventory of agents and AI assets — including rogue/shadow agents. The precondition for every downstream control: you cannot govern what you have not enumerated.\n"
+      },
+      {
+        "id": "identity",
+        "name": "Identity",
+        "domains": [
+          "D2"
+        ],
+        "gate": "A",
+        "enforcement_point": "Issuance and lifecycle of non-human / agent identities.",
+        "description": "Non-human identity (NHI) issuance, binding and lifecycle for agents and services — the primary perimeter, established before authorization can make meaningful decisions.\n"
+      },
+      {
+        "id": "lifecycle-governance",
+        "name": "Lifecycle Governance",
+        "domains": [
+          "D8",
+          "D6"
+        ],
+        "gate": "D",
+        "enforcement_point": "Attestation and accountability over the agent/model lifecycle.",
+        "description": "Lifecycle governance and attestation, AI supply-chain integrity and AIBOM. The accountability layer that makes agents and their supply chain governed, attested and auditable end to end.\n"
+      }
+    ],
+    "risks": [
+      {
+        "id": "R-IM-01",
+        "name": "Correctness",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks"
+      },
+      {
+        "id": "R-IM-02",
+        "name": "Opacity",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks"
+      },
+      {
+        "id": "R-IM-03",
+        "name": "Untestability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks"
+      },
+      {
+        "id": "R-IM-04",
+        "name": "Latent Capability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks"
+      },
+      {
+        "id": "R-IM-05",
+        "name": "Static Goal Alignment",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks"
+      },
+      {
+        "id": "R-MU-01",
+        "name": "Hallucination",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-02",
+        "name": "Non-determinism",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-03",
+        "name": "Input Sensitivity",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-04",
+        "name": "Robustness",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-05",
+        "name": "Interpretability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-06",
+        "name": "Emergent Capability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-MU-07",
+        "name": "Output Safety",
+        "tier": "MU",
+        "tier_name": "Model Use Risks"
+      },
+      {
+        "id": "R-AG-01",
+        "name": "Dynamic Goal",
+        "tier": "AG",
+        "tier_name": "Agentic Risks"
+      },
+      {
+        "id": "R-AG-02",
+        "name": "Behavioral Compliance",
+        "tier": "AG",
+        "tier_name": "Agentic Risks"
+      },
+      {
+        "id": "R-AG-03",
+        "name": "Context Sensitivity",
+        "tier": "AG",
+        "tier_name": "Agentic Risks"
+      },
+      {
+        "id": "R-SYS-01",
+        "name": "Rogue / Shadow Agents",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-02",
+        "name": "Identity & Privilege Abuse",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-03",
+        "name": "Tool Misuse / Insecure MCP",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-04",
+        "name": "Agentic Supply-Chain Compromise",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-05",
+        "name": "Sensitive Data Exposure",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-06",
+        "name": "Data Leakage / Over-Broad Context",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-07",
+        "name": "Ungoverned / Unaccountable Agents",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-08",
+        "name": "Supply-Chain Compromise",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      },
+      {
+        "id": "R-SYS-09",
+        "name": "Goal Hijacking / Emergent Misuse",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)"
+      }
+    ],
+    "controls": [
+      {
+        "id": "TC-001",
+        "name": "Self-Consistency / Ensemble Cross-Checking",
+        "risk": "R-IM-01",
+        "risk_name": "Correctness",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-002",
+        "name": "Calibrated Confidence Scoring & Thresholding",
+        "risk": "R-IM-01",
+        "risk_name": "Correctness",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-003",
+        "name": "Inference Telemetry & Trace Logging",
+        "risk": "R-IM-02",
+        "risk_name": "Opacity",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4",
+          "D8"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-004",
+        "name": "Feature Attribution / Saliency Analysis",
+        "risk": "R-IM-02",
+        "risk_name": "Opacity",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D8"
+        ],
+        "gate": "D",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-005",
+        "name": "Reasoning / Chain-of-Thought Capture",
+        "risk": "R-IM-02",
+        "risk_name": "Opacity",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4",
+          "D8"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-006",
+        "name": "Automated Adversarial & Fuzzing Harness",
+        "risk": "R-IM-03",
+        "risk_name": "Untestability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "platforms": 17,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-007",
+        "name": "Behavioral Benchmark & Regression Test Suite",
+        "risk": "R-IM-03",
+        "risk_name": "Untestability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "platforms": 21,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-008",
+        "name": "Drift-Triggered Re-Evaluation Pipeline",
+        "risk": "R-IM-03",
+        "risk_name": "Untestability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3",
+          "D6"
+        ],
+        "gate": "B",
+        "platforms": 27,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-009",
+        "name": "Capability Elicitation / Jailbreak Probing",
+        "risk": "R-IM-04",
+        "risk_name": "Latent Capability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "platforms": 17,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-010",
+        "name": "Capability-Scoping Guardrails",
+        "risk": "R-IM-04",
+        "risk_name": "Latent Capability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "authorization",
+        "layer_name": "Authorization",
+        "domains": [
+          "D2",
+          "D4"
+        ],
+        "gate": "A",
+        "platforms": 10,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-011",
+        "name": "Out-of-Scope Request Classifier",
+        "risk": "R-IM-04",
+        "risk_name": "Latent Capability",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-012",
+        "name": "Alignment Evaluation Test Sets",
+        "risk": "R-IM-05",
+        "risk_name": "Static Goal Alignment",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "platforms": 21,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-013",
+        "name": "System-Prompt / Guardrail Enforcement Layer",
+        "risk": "R-IM-05",
+        "risk_name": "Static Goal Alignment",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 1,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-014",
+        "name": "Output-vs-Objective Conformance Monitor",
+        "risk": "R-IM-05",
+        "risk_name": "Static Goal Alignment",
+        "tier": "IM",
+        "tier_name": "Inherent Model Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4",
+          "D8"
+        ],
+        "gate": "B",
+        "platforms": 20,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-015",
+        "name": "Grounded Generation with Citation Enforcement",
+        "risk": "R-MU-01",
+        "risk_name": "Hallucination",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-016",
+        "name": "Faithfulness / Entailment Verifier",
+        "risk": "R-MU-01",
+        "risk_name": "Hallucination",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 7,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-017",
+        "name": "Uncertainty Estimation & Abstention",
+        "risk": "R-MU-01",
+        "risk_name": "Hallucination",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-018",
+        "name": "Claim Extraction & Source Cross-Check",
+        "risk": "R-MU-01",
+        "risk_name": "Hallucination",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 7,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-019",
+        "name": "Deterministic Inference Configuration",
+        "risk": "R-MU-02",
+        "risk_name": "Non-determinism",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-020",
+        "name": "Output Consistency / Majority-Vote Checking",
+        "risk": "R-MU-02",
+        "risk_name": "Non-determinism",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-021",
+        "name": "Response Caching for Stable Inputs",
+        "risk": "R-MU-02",
+        "risk_name": "Non-determinism",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-022",
+        "name": "Prompt-Injection Detection Classifier",
+        "risk": "R-MU-03",
+        "risk_name": "Input Sensitivity",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-023",
+        "name": "Input Sanitization & Normalization",
+        "risk": "R-MU-03",
+        "risk_name": "Input Sensitivity",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "data-boundary",
+        "layer_name": "Data Boundary",
+        "domains": [
+          "D4",
+          "D5"
+        ],
+        "gate": "B",
+        "platforms": 18,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-024",
+        "name": "Instruction-Channel Segregation",
+        "risk": "R-MU-03",
+        "risk_name": "Input Sensitivity",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-025",
+        "name": "Adversarial Perturbation / Input Anomaly Detection",
+        "risk": "R-MU-03",
+        "risk_name": "Input Sensitivity",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 17,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-026",
+        "name": "Out-of-Distribution / Anomaly Input Detection",
+        "risk": "R-MU-04",
+        "risk_name": "Robustness",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 13,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-027",
+        "name": "Adversarial Training & Input Filtering",
+        "risk": "R-MU-04",
+        "risk_name": "Robustness",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3",
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 23,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-028",
+        "name": "Rate Limiting & Abuse Throttling",
+        "risk": "R-MU-04",
+        "risk_name": "Robustness",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "tool-gateway",
+        "layer_name": "Tool Gateway",
+        "domains": [
+          "D4",
+          "D2"
+        ],
+        "gate": "B",
+        "platforms": 3,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-029",
+        "name": "Graceful Degradation / Fail-Safe Fallback",
+        "risk": "R-MU-04",
+        "risk_name": "Robustness",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "kill-switch",
+        "layer_name": "Kill Switch",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 1,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-030",
+        "name": "Feature Attribution & Rationale Generation",
+        "risk": "R-MU-05",
+        "risk_name": "Interpretability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D8"
+        ],
+        "gate": "D",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-031",
+        "name": "Evidence / Citation Surfacing",
+        "risk": "R-MU-05",
+        "risk_name": "Interpretability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "data-boundary",
+        "layer_name": "Data Boundary",
+        "domains": [
+          "D5",
+          "D4"
+        ],
+        "gate": "C",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-032",
+        "name": "Counterfactual Explanation Generation",
+        "risk": "R-MU-05",
+        "risk_name": "Interpretability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D8"
+        ],
+        "gate": "D",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-033",
+        "name": "Behavioral Baselining & Drift Detection",
+        "risk": "R-MU-06",
+        "risk_name": "Emergent Capability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4",
+          "D8"
+        ],
+        "gate": "B",
+        "platforms": 20,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-034",
+        "name": "Output Anomaly / Novelty Detection",
+        "risk": "R-MU-06",
+        "risk_name": "Emergent Capability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 20,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-035",
+        "name": "Automated Containment / Rollback Trigger",
+        "risk": "R-MU-06",
+        "risk_name": "Emergent Capability",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "kill-switch",
+        "layer_name": "Kill Switch",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 1,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-036",
+        "name": "Content-Safety / Toxicity Classifier",
+        "risk": "R-MU-07",
+        "risk_name": "Output Safety",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 9,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-037",
+        "name": "PII & Secret Leakage Detection",
+        "risk": "R-MU-07",
+        "risk_name": "Output Safety",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "data-boundary",
+        "layer_name": "Data Boundary",
+        "domains": [
+          "D5",
+          "D4"
+        ],
+        "gate": "C",
+        "platforms": 14,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-038",
+        "name": "Output Moderation Filter",
+        "risk": "R-MU-07",
+        "risk_name": "Output Safety",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 18,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-039",
+        "name": "Structured Output Validation & Schema Enforcement",
+        "risk": "R-MU-07",
+        "risk_name": "Output Safety",
+        "tier": "MU",
+        "tier_name": "Model Use Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 1,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-040",
+        "name": "Goal / Plan Monitoring vs. Intended Objective",
+        "risk": "R-AG-01",
+        "risk_name": "Dynamic Goal",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 21,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-041",
+        "name": "Pre-Execution Action Validation",
+        "risk": "R-AG-01",
+        "risk_name": "Dynamic Goal",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4",
+          "D2"
+        ],
+        "gate": "B",
+        "platforms": 10,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-042",
+        "name": "Kill-Switch / Circuit Breaker",
+        "risk": "R-AG-01",
+        "risk_name": "Dynamic Goal",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "kill-switch",
+        "layer_name": "Kill Switch",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 1,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-043",
+        "name": "Goal-Change Anomaly Detection",
+        "risk": "R-AG-01",
+        "risk_name": "Dynamic Goal",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 20,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-044",
+        "name": "Least-Privilege Tool / Action Scoping",
+        "risk": "R-AG-02",
+        "risk_name": "Behavioral Compliance",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "authorization",
+        "layer_name": "Authorization",
+        "domains": [
+          "D2"
+        ],
+        "gate": "A",
+        "platforms": 14,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-045",
+        "name": "Policy-as-Code Action Guardrails",
+        "risk": "R-AG-02",
+        "risk_name": "Behavioral Compliance",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "authorization",
+        "layer_name": "Authorization",
+        "domains": [
+          "D2",
+          "D3"
+        ],
+        "gate": "A",
+        "platforms": 10,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-046",
+        "name": "Action Sandboxing / Execution Isolation",
+        "risk": "R-AG-02",
+        "risk_name": "Behavioral Compliance",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "sandbox",
+        "layer_name": "Sandbox",
+        "domains": [
+          "D7"
+        ],
+        "gate": "D",
+        "platforms": 0,
+        "signal": "build"
+      },
+      {
+        "id": "TC-047",
+        "name": "Tamper-Evident Action Logging",
+        "risk": "R-AG-02",
+        "risk_name": "Behavioral Compliance",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "observability",
+        "layer_name": "Observability",
+        "domains": [
+          "D8"
+        ],
+        "gate": "D",
+        "platforms": 4,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-048",
+        "name": "Context / Memory Source Validation & Isolation",
+        "risk": "R-AG-03",
+        "risk_name": "Context Sensitivity",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "memory-governance",
+        "layer_name": "Memory Governance",
+        "domains": [
+          "D4",
+          "D5"
+        ],
+        "gate": "B",
+        "platforms": 11,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-049",
+        "name": "Context-Poisoning / Memory Integrity Detection",
+        "risk": "R-AG-03",
+        "risk_name": "Context Sensitivity",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "memory-governance",
+        "layer_name": "Memory Governance",
+        "domains": [
+          "D4",
+          "D5"
+        ],
+        "gate": "B",
+        "platforms": 14,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-050",
+        "name": "Context-Window / Memory Horizon Bounding",
+        "risk": "R-AG-03",
+        "risk_name": "Context Sensitivity",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "memory-governance",
+        "layer_name": "Memory Governance",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 3,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-051",
+        "name": "State Re-Validation Before Consequential Actions",
+        "risk": "R-AG-03",
+        "risk_name": "Context Sensitivity",
+        "tier": "AG",
+        "tier_name": "Agentic Risks",
+        "layer": "runtime-mediation",
+        "layer_name": "Runtime Mediation",
+        "domains": [
+          "D4"
+        ],
+        "gate": "B",
+        "platforms": 12,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-052",
+        "name": "Agent Discovery & Inventory",
+        "risk": "R-SYS-01",
+        "risk_name": "Rogue / Shadow Agents",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "inventory",
+        "layer_name": "Inventory",
+        "domains": [
+          "D1"
+        ],
+        "gate": "A",
+        "platforms": 18,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-053",
+        "name": "Non-Human Agent Identity (NHI)",
+        "risk": "R-SYS-02",
+        "risk_name": "Identity & Privilege Abuse",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "identity",
+        "layer_name": "Identity",
+        "domains": [
+          "D2"
+        ],
+        "gate": "A",
+        "platforms": 9,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-054",
+        "name": "Tool Gateway / MCP Brokering",
+        "risk": "R-SYS-03",
+        "risk_name": "Tool Misuse / Insecure MCP",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "tool-gateway",
+        "layer_name": "Tool Gateway",
+        "domains": [
+          "D2",
+          "D4"
+        ],
+        "gate": "A",
+        "platforms": 14,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-055",
+        "name": "Signed Tool Manifests & Provenance",
+        "risk": "R-SYS-04",
+        "risk_name": "Agentic Supply-Chain Compromise",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "tool-gateway",
+        "layer_name": "Tool Gateway",
+        "domains": [
+          "D6",
+          "D2"
+        ],
+        "gate": "C",
+        "platforms": 4,
+        "signal": "emerging"
+      },
+      {
+        "id": "TC-056",
+        "name": "Confidential / Encrypted Inference",
+        "risk": "R-SYS-05",
+        "risk_name": "Sensitive Data Exposure",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "data-boundary",
+        "layer_name": "Data Boundary",
+        "domains": [
+          "D7"
+        ],
+        "gate": "D",
+        "platforms": 7,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-057",
+        "name": "Sensitive Data Classification & Need-to-Know",
+        "risk": "R-SYS-06",
+        "risk_name": "Data Leakage / Over-Broad Context",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "data-boundary",
+        "layer_name": "Data Boundary",
+        "domains": [
+          "D5"
+        ],
+        "gate": "C",
+        "platforms": 15,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-058",
+        "name": "Lifecycle Governance & Attestation",
+        "risk": "R-SYS-07",
+        "risk_name": "Ungoverned / Unaccountable Agents",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "lifecycle-governance",
+        "layer_name": "Lifecycle Governance",
+        "domains": [
+          "D8"
+        ],
+        "gate": "D",
+        "platforms": 12,
+        "signal": "buy_select"
+      },
+      {
+        "id": "TC-059",
+        "name": "AI Supply-Chain Integrity / AIBOM",
+        "risk": "R-SYS-08",
+        "risk_name": "Supply-Chain Compromise",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "lifecycle-governance",
+        "layer_name": "Lifecycle Governance",
+        "domains": [
+          "D6"
+        ],
+        "gate": "C",
+        "platforms": 19,
+        "signal": "commodity"
+      },
+      {
+        "id": "TC-060",
+        "name": "Continuous Agent Workflow Red-Teaming",
+        "risk": "R-SYS-09",
+        "risk_name": "Goal Hijacking / Emergent Misuse",
+        "tier": "SYS",
+        "tier_name": "Agent Security Control Plane (Systems)",
+        "layer": "continuous-testing",
+        "layer_name": "Continuous Testing",
+        "domains": [
+          "D3"
+        ],
+        "gate": "B",
+        "platforms": 17,
+        "signal": "commodity"
+      }
+    ]
+  }
+}

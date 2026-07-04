@@ -30,9 +30,15 @@ LAYERS = ROOT / "spec" / "control-plane-layers.yaml"
 CATALOGUE = ROOT / "spec" / "threat-control-catalogue.yaml"
 OUT = ROOT / "spec" / "threat-control-catalogue.json"
 
-VALID_DOMAINS = {f"D{i}" for i in range(1, 9)}
-VALID_GATES = {"A", "B", "C", "D"}
-VALID_SIGNALS = {"build", "emerging", "buy_select", "commodity"}
+# Ordered tuples so the emitted JSON is deterministic across Python processes
+# (set iteration order varies with hash seeding, which would break the CI
+# in-sync check). Membership tests use the derived sets.
+DOMAIN_ORDER = tuple(f"D{i}" for i in range(1, 9))
+GATE_ORDER = ("A", "B", "C", "D")
+SIGNAL_ORDER = ("build", "emerging", "buy_select", "commodity")
+VALID_DOMAINS = set(DOMAIN_ORDER)
+VALID_GATES = set(GATE_ORDER)
+VALID_SIGNALS = set(SIGNAL_ORDER)
 
 
 def main() -> int:
@@ -112,8 +118,8 @@ def main() -> int:
         return 1
 
     # --- rollups for the UI -------------------------------------------------
-    signals = {s: 0 for s in VALID_SIGNALS}
-    domain_primary = {d: 0 for d in sorted(VALID_DOMAINS)}
+    signals = {s: 0 for s in SIGNAL_ORDER}
+    domain_primary = {d: 0 for d in DOMAIN_ORDER}
     for c in controls:
         signals[c["signal"]] += 1
         domain_primary[c["domains"][0]] += 1

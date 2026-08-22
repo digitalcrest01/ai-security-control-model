@@ -17,6 +17,25 @@
         infrastructure and/or policy-as-code so it can be enforced in the delivery
         pipeline rather than asserted in a document.
 
+        ## Production expansion backlog
+
+        The threat-control catalogue maps the largest share of AI and agentic
+        technical controls to D4. Keep the seven lifecycle controls stable, but
+        build their production implementation around these runtime capability
+        families:
+
+        | Family | Example catalogue controls | Gate evidence |
+        |---|---|---|
+        | Prompt and instruction mediation | `TC-011`, `TC-013`, `TC-022`, `TC-024` | detector verdicts, policy decisions |
+        | Grounding and correctness | `TC-001`, `TC-002`, `TC-015`, `TC-017`, `TC-018` | citation checks, abstention thresholds |
+        | Tool and action safety | `TC-028`, `TC-040`, `TC-041`, `TC-042`, `TC-051` | tool scopes, pre-execution approvals, circuit-breaker state |
+        | Memory and context integrity | `TC-048`, `TC-049`, `TC-050` | memory-source validation, poisoning findings |
+        | Output and schema enforcement | `TC-036`, `TC-038`, `TC-039` | moderation decisions, schema validation failures |
+        | Observability and anomaly response | `TC-003`, `TC-005`, `TC-033`, `TC-034`, `TC-035`, `TC-043` | traces, anomaly alerts, rollback records |
+
+        See [`../../docs/production-readiness.md`](../../docs/production-readiness.md)
+        for the operating cadence and cloud production invariants.
+
         ## Controls
 
         | ID | Capability | Status | Owner |

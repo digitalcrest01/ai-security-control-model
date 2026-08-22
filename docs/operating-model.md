@@ -82,6 +82,23 @@ The same model is the delivery motion. See [`spec/delivery-model.yaml`](../spec/
 | 4. Build & embed | 6–12 weeks | IaC modules + OPA/Sentinel policies live |
 | 5. Assure & run | Ongoing | Dashboards + audit pack + improvement loop |
 
+## Production hardening layer
+
+The model is production-ready when gates are fed by evidence rather than manual
+attestation. The hardening layer in
+[`production-readiness.md`](production-readiness.md) defines:
+
+- the evidence each gate must be able to evaluate;
+- the AWS, GCP, and Azure landing-zone invariants for workload identity, policy
+  decisions, evidence export, and data boundaries;
+- the operating cadence for drift, exceptions, audit packs, and red-team
+  refreshes; and
+- the D4 runtime-control backlog revealed by the threat-control catalogue.
+
+Treat that D4 asymmetry as a production signal: identity is the first perimeter,
+but runtime mediation is where the largest share of AI and agentic risk is
+actually enforced.
+
 ## Attribution
 
 Domain and control names retained from source; maturity and coverage states as

@@ -10,7 +10,9 @@ Terraform and policy-as-code; each lifecycle phase ends in an **exit gate** that
 must pass before work advances.
 
 > The interactive one-page version is [`docs/index.html`](docs/index.html);
-> the narrative is in [`docs/operating-model.md`](docs/operating-model.md).
+> the narrative is in [`docs/operating-model.md`](docs/operating-model.md);
+> the production hardening layer is in
+> [`docs/production-readiness.md`](docs/production-readiness.md).
 
 ## The model at a glance
 
@@ -93,6 +95,17 @@ criteria fail.
   runs on a schedule.
 - **Gates A–D are OPA policies, not review meetings** — see [`gates/`](gates).
 - **Secure landing zones carry the baseline** so new AI workloads inherit it.
+
+## Production-ready operating model
+
+The framework now includes a production-readiness layer that makes the operating
+model actionable for AWS, GCP, Azure, and agentic AI deployments. It defines the
+evidence contract expected at each gate, the cloud landing-zone invariants that
+must hold across providers, the cadence for drift and exception review, and the
+runtime-control backlog revealed by the threat catalogue.
+
+Start with [`docs/production-readiness.md`](docs/production-readiness.md) when
+turning the model into a live security operating model.
 
 ## Quick start
 

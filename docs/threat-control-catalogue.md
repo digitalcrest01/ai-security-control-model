@@ -82,9 +82,10 @@ the phase-oriented register is thin relative to the actual threat surface:
 | D7 Confidential AI | 2 | Encrypted inference + action sandboxing. |
 | D1 Asset & Posture | 1 | Agent discovery — the precondition for everything else. |
 
-**Action:** treat this as a backlog signal — D4's control register in
-[`domains/d4-runtime-protection/`](../domains/d4-runtime-protection) should be
-expanded toward the runtime capabilities enumerated here.
+**Action:** treat this as a backlog signal, not a catalogue defect. D4's
+production roadmap should expand toward the runtime capabilities enumerated
+here; the first set of implementation priorities is captured in
+[`production-readiness.md`](production-readiness.md).
 
 ## Build-vs-buy: the market-maturity signal
 
